@@ -36,7 +36,30 @@ Builder.load_string("""
             on_press: root.manager.current = 'camera'
         Button:
             size_hint: 0.3, 0.1
-            text: 'help'
+            font_name: 'NanumBarunGothic.ttf'
+            text: '이미지 불러오기'
+            on_press: root.manager.current = 'picture'            
+
+<PictureScreen>:
+    id: my_widget
+    BoxLayout:
+        orientation: 'vertical'
+        BoxLayout:
+            orientation: 'horizontal'
+
+            Image:
+                id: my_image
+                source: ""
+
+            FileChooserIconView:
+                id : filechooser
+                on_selection: my_widget.selected(filechooser.selection)
+    BoxLayout:
+        orientation: 'horizontal'
+        Button:
+            size_hint: 0.3, 0.1
+            text: 'Back to menu'
+            on_press: root.manager.current = 'main'
 
 <CameraScreen>:
     BoxLayout:
@@ -57,13 +80,21 @@ Builder.load_string("""
             on_press: root.capture()
         Button:
             size_hint: 0.3, 0.1
-            text: 'Back to menu'
+            text: 'Back to main'
             on_press: root.manager.current = 'main'
 
 """)
-#-------------------------------------
+# -------------------------------------
+
 
 class MainScreen(Screen):
+    pass
+
+class PictureScreen(Screen):
+    #파일 불러오는 작업
+    def selected(self, filename):
+        self.ids.my_image.source = filename[0]
+        print(filename[0])
     pass
 
 class CameraScreen(Screen):
@@ -76,14 +107,13 @@ class CameraScreen(Screen):
     pass
 
 class VeganApp(App):
-
     def build(self):
         # Create the screen manager
         sm = ScreenManager()
         sm.add_widget(MainScreen(name='main'))
         sm.add_widget(CameraScreen(name='camera'))
+        sm.add_widget(PictureScreen(name='picture'))
         return sm
-   
 
 if __name__ == '__main__':
     VeganApp().run()
